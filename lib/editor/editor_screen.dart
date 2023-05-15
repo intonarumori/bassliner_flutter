@@ -68,7 +68,7 @@ class _EditorScreenState extends State<EditorScreen> {
     final size = MediaQuery.of(context).size;
 
     final EdgeInsets margins = size.width > 1000
-        ? const EdgeInsets.fromLTRB(10, 10, 10, 30)
+        ? const EdgeInsets.fromLTRB(30, 30, 30, 40)
         : const EdgeInsets.fromLTRB(10, 10, 10, 30);
     final double unitHeight = (size.height / 20).floorToDouble();
     final double rem = size.height > 500 ? 10 : 8;

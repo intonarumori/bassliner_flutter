@@ -7,7 +7,6 @@ import 'package:bassliner/views/bordered_button.dart';
 import 'package:bassliner/views/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class MobileFileBrowser extends StatefulWidget {
@@ -70,18 +69,14 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                 ),
                 const SizedBox(height: 10),
                 Expanded(
-                  child: FutureBuilder(
-                    future: getApplicationDocumentsDirectory(),
-                    builder: (context, snapshot) {
-                      if (snapshot.data != null) {
-                        return _DirectoryPanel(
-                          path: snapshot.data!.path,
-                          onPathSelect: (path) => widget.viewModel.selectDirectory(path),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
+                  child: StreamBuilder(
+                    stream: widget.viewModel.rootDirectory,
+                    builder: (context, snapshot) => snapshot.hasData
+                        ? _DirectoryPanel(
+                            path: snapshot.data!,
+                            onPathSelect: (path) => widget.viewModel.selectDirectory(path),
+                          )
+                        : Container(),
                   ),
                 ),
               ],
@@ -268,7 +263,7 @@ class _PatternsPanelState extends State<_PatternsPanel> {
                     .map<Widget>(
                       (e) => InkWell(
                         onTap: () => widget.onItemSelected(e.path),
-                        child: _GridItemView(text: e.name),
+                        child: _GridItemView(text: e.name, selected: false),
                       ),
                     )
                     .toList(),

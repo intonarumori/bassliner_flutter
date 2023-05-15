@@ -1,3 +1,4 @@
+import 'package:bassliner/browser/custom_cupertino_alert_dialog.dart' as cup;
 import 'package:flutter/cupertino.dart';
 
 class TextFieldPopup extends StatefulWidget {
@@ -45,7 +46,7 @@ class _TextFieldPopupState extends State<TextFieldPopup> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
+    return cup.CupertinoAlertDialog(
       title: Container(
         padding: const EdgeInsets.only(bottom: 15),
         child: Text(widget.title),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bassliner/data/pattern_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,13 +17,22 @@ abstract class BrowseScreenViewModel {
   String? title;
   bool mobileBrowsingEnabled;
   final selectedDirectory = BehaviorSubject<String?>();
+  final rootDirectory = BehaviorSubject<String?>();
 
   BrowseScreenViewModel({this.title, this.mobileBrowsingEnabled = true}) {
     _setup();
   }
 
   void _setup() async {
-    final directory = await getApplicationDocumentsDirectory();
+    Directory directory = await getApplicationDocumentsDirectory();
+    if (Platform.isAndroid) {
+      final patternDirectory = Directory('${directory.path}/Patterns');
+      if (!patternDirectory.existsSync()) {
+        patternDirectory.createSync();
+      }
+      directory = patternDirectory;
+    }
+    rootDirectory.add(directory.path);
     selectedDirectory.add(directory.path);
   }
 
