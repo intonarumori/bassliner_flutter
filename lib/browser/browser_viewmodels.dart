@@ -12,14 +12,16 @@ class BrowseScreenSelection {
   BrowseScreenSelection(this.group, this.item);
 }
 
+enum BrowseScreenMode { load, save, edit }
+
 abstract class BrowseScreenViewModel {
   BrowseScreenSelection? selectedItem;
   String? title;
-  bool mobileBrowsingEnabled;
+  BrowseScreenMode mode;
   final selectedDirectory = BehaviorSubject<String?>();
   final rootDirectory = BehaviorSubject<String?>();
 
-  BrowseScreenViewModel({this.title, this.mobileBrowsingEnabled = true}) {
+  BrowseScreenViewModel({this.title, this.mode = BrowseScreenMode.load}) {
     _setup();
   }
 
@@ -48,11 +50,17 @@ abstract class BrowseScreenViewModel {
 class BrowseScreenLoadViewModel extends BrowseScreenViewModel {
   final PatternEditor patternEditor;
 
-  BrowseScreenLoadViewModel({super.title, required this.patternEditor});
+  BrowseScreenLoadViewModel({super.title, required this.patternEditor})
+      : super(mode: BrowseScreenMode.load);
+
+  @override
+  void selectPath(String path) {
+    patternEditor.loadCurrentFromPath(path);
+  }
 
   @override
   void selectPattern(int group, int item) {
-    debugPrint('Load from $group $item');
+    patternEditor.selectPattern(group, item);
   }
 }
 
@@ -61,7 +69,8 @@ class BrowseScreenLoadViewModel extends BrowseScreenViewModel {
 class BrowseScreenSaveViewModel extends BrowseScreenViewModel {
   final PatternEditor patternEditor;
 
-  BrowseScreenSaveViewModel({super.title, required this.patternEditor});
+  BrowseScreenSaveViewModel({super.title, required this.patternEditor})
+      : super(mode: BrowseScreenMode.save);
 
   @override
   void selectPattern(int group, int item) {
@@ -86,7 +95,7 @@ class BrowseScreenEditViewModel extends BrowseScreenViewModel {
   final PatternEditor patternEditor;
 
   BrowseScreenEditViewModel({super.title, required this.patternEditor})
-      : super(mobileBrowsingEnabled: false) {
+      : super(mode: BrowseScreenMode.edit) {
     selectedItem =
         BrowseScreenSelection(patternEditor.selectedGroup, patternEditor.selectedPattern);
   }

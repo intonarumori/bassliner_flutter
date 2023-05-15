@@ -28,7 +28,7 @@ class PatternParser {
   static const int maxStepCount = 16;
   static const int notesInOctave = 12;
   static const int defaultPitch = 24;
-  static const int maxPitch = 48;
+  static const int maxPitch = 60;
 
   static Uint8List convertToData(Td3PatternData patternData, int group, int pattern) {
     final data = Uint8List(dataSize);

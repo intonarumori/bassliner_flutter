@@ -47,17 +47,22 @@ class _BrowserScreenState extends State<BrowserScreen> {
   }
 
   void _setup() async {
-    if (widget.viewModel.mobileBrowsingEnabled) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final value = prefs.getInt('browser_selected_tab') ?? 0;
-      switch (value) {
-        case 0:
-          _selectTab(BrowserScreenTab.device);
-          break;
-        default:
-          _selectTab(BrowserScreenTab.mobile);
-          break;
-      }
+    switch (widget.viewModel.mode) {
+      case BrowseScreenMode.load:
+      case BrowseScreenMode.save:
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        final value = prefs.getInt('browser_selected_tab') ?? 0;
+        switch (value) {
+          case 0:
+            _selectTab(BrowserScreenTab.device);
+            break;
+          default:
+            _selectTab(BrowserScreenTab.mobile);
+            break;
+        }
+        break;
+      case BrowseScreenMode.edit:
+        break;
     }
   }
 
@@ -130,7 +135,8 @@ class _BrowserScreenState extends State<BrowserScreen> {
 
           const SizedBox(height: 10),
 
-          if (widget.viewModel.mobileBrowsingEnabled) ...[
+          if (widget.viewModel.mode == BrowseScreenMode.load ||
+              widget.viewModel.mode == BrowseScreenMode.save) ...[
             // TABBAR
             SizedBox(
               height: 50,

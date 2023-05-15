@@ -44,24 +44,26 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                         child: Text('Folders', style: TextStyle(color: theme.whiteKeyColor)),
                       ),
                       Row(
-                        children: [
-                          BorderedButton(
-                            icon: 'assets/FolderIcon.svg',
-                            insets: const EdgeInsets.all(7),
-                            minimumSize: const Size(50, 30),
-                            shrinkWrap: true,
-                            theme: borderedButtonTheme,
-                            onPressed: () => debugPrint('new folder'),
-                          ),
-                          const Spacer(),
-                          BorderedButton(
-                            icon: 'assets/PlusIcon.svg',
-                            insets: const EdgeInsets.all(7),
-                            minimumSize: const Size(50, 30),
-                            shrinkWrap: true,
-                            theme: borderedButtonTheme,
-                            onPressed: () => debugPrint('new folder'),
-                          ),
+                        children: const [
+                          // BorderedButton(
+                          //   icon: 'assets/FolderIcon.svg',
+                          //   insets: const EdgeInsets.all(7),
+                          //   minimumSize: const Size(50, 30),
+                          //   shrinkWrap: true,
+                          //   theme: borderedButtonTheme,
+                          //   onPressed: () => debugPrint('new folder'),
+                          // ),
+                          Spacer(),
+                          // if (widget.viewModel.mode == BrowseScreenMode.save) ...[
+                          //   BorderedButton(
+                          //     icon: 'assets/PlusIcon.svg',
+                          //     insets: const EdgeInsets.all(7),
+                          //     minimumSize: const Size(50, 30),
+                          //     shrinkWrap: true,
+                          //     theme: borderedButtonTheme,
+                          //     onPressed: () => debugPrint('new folder'),
+                          //   ),
+                          // ]
                         ],
                       )
                     ],
@@ -102,7 +104,8 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                         Row(
                           children: [
                             const Spacer(),
-                            BorderedButton(
+                            if (widget.viewModel.mode == BrowseScreenMode.save) ...[
+                              BorderedButton(
                                 text: 'Save as new',
                                 theme: borderedButtonTheme,
                                 onPressed: () {
@@ -120,7 +123,9 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                                       },
                                     ),
                                   );
-                                }),
+                                },
+                              ),
+                            ],
                           ],
                         )
                       ],
@@ -133,30 +138,40 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return _PatternsPanel(
-                              path: snapshot.data!,
-                              onItemSelected: (path) {
+                            path: snapshot.data!,
+                            onItemSelected: (path) {
+                              if (widget.viewModel.mode == BrowseScreenMode.save) {
                                 showDialog(
-                                    context: context,
-                                    builder: (context) => CupertinoAlertDialog(
-                                          title: Container(
-                                              padding: const EdgeInsets.only(bottom: 10),
-                                              child: const Text('Overwrite Pattern')),
-                                          content: const Text(
-                                              'Saving the pattern to the selected file will overwrite the existing content.'),
-                                          actions: [
-                                            CupertinoDialogAction(
-                                              onPressed: () => Navigator.of(context).pop(),
-                                              child: const Text('Cancel'),
-                                            ),
-                                            CupertinoDialogAction(
-                                              isDestructiveAction: true,
-                                              onPressed: () => Navigator.of(context).pop(),
-                                              child: const Text('Overwrite'),
-                                            ),
-                                          ],
-                                        ));
-                              } //=> widget.viewModel.selectPath(path),
-                              );
+                                  context: context,
+                                  builder: (context) => CupertinoAlertDialog(
+                                    title: Container(
+                                        padding: const EdgeInsets.only(bottom: 10),
+                                        child: const Text('Overwrite Pattern')),
+                                    content: const Text(
+                                        'Saving the pattern to the selected file will overwrite the existing content.'),
+                                    actions: [
+                                      CupertinoDialogAction(
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      CupertinoDialogAction(
+                                        isDestructiveAction: true,
+                                        onPressed: () {
+                                          widget.viewModel.selectPath(path);
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Overwrite'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                widget.viewModel.selectPath(path);
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          );
                         } else {
                           return Container();
                         }

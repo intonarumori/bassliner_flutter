@@ -1,8 +1,29 @@
+import 'package:flutter/foundation.dart';
+
 class Abl3Pattern {
   final Abl3SynthParameters parameters;
   final List<Abl3PatternStep> steps;
 
-  Abl3Pattern({required this.parameters, required this.steps});
+  const Abl3Pattern({required this.parameters, required this.steps});
+
+  @override
+  String toString() {
+    String str = '[ABL3Pattern]\n';
+    for (final step in steps) {
+      str += '  Step: ${step.toString()}\n';
+    }
+    return str;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Abl3Pattern &&
+      other.runtimeType == runtimeType &&
+      other.parameters == parameters &&
+      listEquals(other.steps, steps);
+
+  @override
+  int get hashCode => parameters.hashCode ^ steps.hashCode;
 }
 
 class Abl3SynthParameters {
@@ -13,6 +34,16 @@ class Abl3SynthParameters {
     required this.triplet,
     required this.shuffle,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is Abl3SynthParameters &&
+      other.runtimeType == runtimeType &&
+      other.triplet == triplet &&
+      other.shuffle == shuffle;
+
+  @override
+  int get hashCode => triplet.hashCode ^ shuffle.hashCode;
 }
 
 class Abl3PatternStep {
@@ -23,7 +54,7 @@ class Abl3PatternStep {
   final bool slide;
   final bool gate;
 
-  Abl3PatternStep({
+  const Abl3PatternStep({
     required this.pitch,
     required this.up,
     required this.down,
@@ -31,6 +62,31 @@ class Abl3PatternStep {
     required this.slide,
     required this.gate,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is Abl3PatternStep &&
+      other.runtimeType == runtimeType &&
+      other.pitch == pitch &&
+      other.up == up &&
+      other.down == down &&
+      other.accent == accent &&
+      other.slide == slide &&
+      other.gate == gate;
+
+  @override
+  int get hashCode =>
+      pitch.hashCode ^
+      up.hashCode ^
+      down.hashCode ^
+      accent.hashCode ^
+      slide.hashCode ^
+      gate.hashCode;
+
+  @override
+  String toString() {
+    return '[Abl3PatternStep] gate:$gate pitch:$pitch up:$up down:$down accent:$accent slide:$slide';
+  }
 }
 
 // MARK: -
@@ -63,7 +119,7 @@ class Abl3PatternParser {
 
   static String serializePattern(Abl3Pattern pattern) {
     String string = '';
-    string += 'metaHeader\n';
+    string += '$metaHeader\n';
 
     Map<String, String> params = {};
     params['Triplet'] = pattern.parameters.triplet.toStringAsFixed(6);
@@ -83,13 +139,13 @@ class Abl3PatternParser {
   static Abl3Pattern? parsePattern(String string) {
     final lines = string.split('\n');
 
-    if (lines.length < 2 || lines.first.trim() != 'metaHeader') {
+    if (lines.length < 2 || lines.first.trim() != metaHeader) {
       throw Abl3ParseException('Invalid header');
     }
 
     // parse lines[1] for synth parameters
-    final synthParamParts = lines[1].split(' ');
-    if (synthParamParts.length < 16) {
+    final synthParamParts = lines[1].trim().split(' ');
+    if (synthParamParts.length < 2) {
       throw Abl3ParseException('Invalid parameters');
     }
 
@@ -98,11 +154,11 @@ class Abl3PatternParser {
 
     int index = 0;
     while (true) {
-      if (synthParamParts.length < index * 2 + 1) {
+      if (synthParamParts.length < (index * 2 + 2)) {
         break;
       }
-      final name = synthParamParts[index * 2].trim();
-      final value = double.parse(synthParamParts[index * 2 + 1].trim());
+      final name = synthParamParts[index * 2 + 1].trim();
+      final value = double.parse(synthParamParts[index * 2 + 2].trim());
 
       switch (name) {
         case "Triplet:":
@@ -123,6 +179,7 @@ class Abl3PatternParser {
 
     for (int i = 2; i < lines.length; i++) {
       final line = lines[i];
+      if (line.isEmpty) continue;
       final parts = line
           .split(' ')
           .map((e) => int.tryParse(e))

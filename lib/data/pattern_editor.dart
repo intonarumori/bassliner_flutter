@@ -89,9 +89,22 @@ class PatternEditor extends ChangeNotifier {
     connection.sendPatternData(td3PatternData, group, pattern);
   }
 
+  void loadCurrentFromPath(String path) async {
+    final data = await File(path).readAsString();
+    final abl3Pattern = Abl3PatternParser.parsePattern(data);
+    if (abl3Pattern != null) {
+      final editorPatternData = EditorPatternData.fromAbl3Pattern(abl3Pattern);
+      _pattern = editorPatternData;
+      notifyListeners();
+      debugPrint('ABL3 file loaded successfully.');
+    }
+  }
+
   void saveCurrentToPath(String path) {
     final abl3Pattern = pattern.toAbl3Pattern();
     final data = Abl3PatternParser.serializePattern(abl3Pattern);
+
+    debugPrint('DATA: $data');
     final file = File(path);
     file.writeAsString(data);
   }
