@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.bassliner">
+    package="com.drummachinefunk.bassliner">
    <application
-        android:label="bassliner"
+        android:label="Bassliner"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

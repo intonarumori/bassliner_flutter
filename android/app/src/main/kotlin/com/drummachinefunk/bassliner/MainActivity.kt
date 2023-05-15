@@ -1,4 +1,4 @@
-package com.example.bassliner
+package com.drummachinefunk.bassliner
 
 import io.flutter.embedding.android.FlutterActivity
 
