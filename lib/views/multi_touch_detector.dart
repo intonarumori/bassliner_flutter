@@ -46,6 +46,7 @@ class _MultiTouchDetectorState extends State<MultiTouchDetector> {
       onPointerDown: (event) => _pointerDown(event),
       onPointerUp: (event) => _pointerUp(event),
       onPointerMove: (event) => _pointerMove(event),
+      behavior: HitTestBehavior.opaque,
       child: widget.child,
     );
   }
