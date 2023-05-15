@@ -1,0 +1,42 @@
+name: bassliner
+description: A new Flutter project.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=2.19.4 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_midi_command: ^0.4.11
+  flutter_svg: ^2.0.5
+  intl: ^0.18.1
+  path_provider: ^2.0.15
+  provider: ^6.0.5
+  rxdart: ^0.27.7
+  shared_preferences: ^2.1.1
+  watcher: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - 'assets/BasslineLogoOutline.svg'
+    - 'assets/FolderIcon.svg'
+    - 'assets/iPhoneIcon.svg'
+    - 'assets/PlusIcon.svg'
+    - 'assets/OctaveDownIcon.svg'
+    - 'assets/OctaveMiddleIcon.svg'
+    - 'assets/OctaveUpIcon.svg'
+    - 'assets/QuestionMarkIcon.svg'
+    - 'assets/RefreshIcon.svg'
+    - 'assets/RotateLeftIcon.svg'
+    - 'assets/RotateRightIcon.svg'
+    - 'assets/StepSelectionIcon.svg'
+    - 'assets/TD3Icon.svg'
