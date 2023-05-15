@@ -44,6 +44,14 @@ abstract class BrowseScreenViewModel {
     selectedDirectory.add(path);
   }
 
+  void createFolder(String name) {
+    final path = '${rootDirectory.value}/$name';
+    final directory = Directory(path);
+    if (!directory.existsSync()) {
+      directory.createSync();
+    }
+  }
+
   void saveAsNew(String path, String name) {}
 }
 

@@ -7,6 +7,7 @@ import 'package:bassliner/views/bordered_button.dart';
 import 'package:bassliner/views/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MobileFileBrowser extends StatefulWidget {
@@ -44,7 +45,7 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                         child: Text('Folders', style: TextStyle(color: theme.whiteKeyColor)),
                       ),
                       Row(
-                        children: const [
+                        children: [
                           // BorderedButton(
                           //   icon: 'assets/FolderIcon.svg',
                           //   insets: const EdgeInsets.all(7),
@@ -53,17 +54,32 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                           //   theme: borderedButtonTheme,
                           //   onPressed: () => debugPrint('new folder'),
                           // ),
-                          Spacer(),
-                          // if (widget.viewModel.mode == BrowseScreenMode.save) ...[
-                          //   BorderedButton(
-                          //     icon: 'assets/PlusIcon.svg',
-                          //     insets: const EdgeInsets.all(7),
-                          //     minimumSize: const Size(50, 30),
-                          //     shrinkWrap: true,
-                          //     theme: borderedButtonTheme,
-                          //     onPressed: () => debugPrint('new folder'),
-                          //   ),
-                          // ]
+                          const Spacer(),
+                          if (widget.viewModel.mode == BrowseScreenMode.save) ...[
+                            BorderedButton(
+                              icon: 'assets/PlusIcon.svg',
+                              insets: const EdgeInsets.all(7),
+                              minimumSize: const Size(50, 30),
+                              shrinkWrap: true,
+                              theme: borderedButtonTheme,
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => TextFieldPopup(
+                                    title: 'Create Folder',
+                                    initialText:
+                                        'Project ${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
+                                    cancelTitle: 'Cancel',
+                                    confirmTitle: 'Create',
+                                    onCancel: () => {},
+                                    onConfirmed: (text) {
+                                      widget.viewModel.createFolder(text);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ]
                         ],
                       )
                     ],

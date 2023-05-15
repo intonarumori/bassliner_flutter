@@ -18,9 +18,6 @@ class DirectoryBrowser extends ChangeNotifier {
     subscription = watcher.events.listen((event) {
       _reload();
     });
-
-    // final file = File('$path/test.txt');
-    // file.writeAsString('test');
     _reload();
   }
 

@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: '^3.0.0'
 
 dependencies:
   flutter:
@@ -16,7 +16,11 @@ dependencies:
   provider: ^6.0.5
   rxdart: ^0.27.7
   shared_preferences: ^2.1.1
-  watcher: ^1.0.2
+  watcher:
+    #path: ../watcher
+    git:
+      url: https://github.com/intonarumori/watcher.git
+      ref: 8da8beb
 
 dev_dependencies:
   flutter_test:
