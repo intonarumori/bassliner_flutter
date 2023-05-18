@@ -11,6 +11,8 @@ import 'package:bassliner/views/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class EditorScreen extends StatefulWidget {
   final Function() onToggleTheme;
@@ -109,7 +111,12 @@ class _EditorScreenState extends State<EditorScreen> {
                           BorderedButton(
                               minimumSize: const Size(50, 30),
                               icon: 'assets/QuestionMarkIcon.svg',
-                              onPressed: () => debugPrint('press')),
+                              onPressed: () {
+                                launchUrlString(
+                                  'https://drummachinefunk.com/files/Bassliner_User_Manual.pdf',
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              }),
                           const SizedBox(width: 4),
                           Consumer<PatternEditor>(builder: (context, value, child) {
                             return BorderedButton(
@@ -168,6 +175,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                     child: Text(
                                       '${editor.pattern.steps}',
                                       textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.backgroundColor),
                                     ),
                                   )
                                 ],

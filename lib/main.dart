@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bassliner/data/pattern_editor.dart';
 import 'package:bassliner/editor/editor_screen.dart';
 import 'package:bassliner/views/theme.dart';
+import 'package:bassliner/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +51,6 @@ class _MainScreenState extends State<MainScreen> {
     Colors.pink,
     Colors.blue,
     Colors.green,
-    Colors.yellow,
   ];
   int _currentTheme = 0;
 
@@ -78,7 +78,18 @@ class _MainScreenState extends State<MainScreen> {
       child: MaterialApp(
         theme: theme,
         home: Scaffold(
-          body: EditorScreen(onToggleTheme: _toggleTheme),
+          body: Consumer<PatternEditor>(builder: (context, patternEditor, child) {
+            return StreamBuilder(
+                stream: patternEditor.isConnected.stream,
+                builder: (context, snapshot) {
+                  final connected = snapshot.data ?? false;
+                  if (connected) {
+                    return EditorScreen(onToggleTheme: _toggleTheme);
+                  } else {
+                    return WelcomeScreen(onToggleTheme: _toggleTheme);
+                  }
+                });
+          }),
         ),
       ),
     );

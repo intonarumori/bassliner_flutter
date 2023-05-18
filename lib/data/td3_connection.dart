@@ -33,6 +33,8 @@ class Td3Connection {
 
   StreamSubscription<MidiPacket>? midiDataSubscription;
 
+  final devices = BehaviorSubject<List<MidiDevice>>.seeded([]);
+
   // MARK: -
 
   Td3Connection() {
@@ -47,12 +49,15 @@ class Td3Connection {
   void _refreshMidi() async {
     final devices = await _midi.devices ?? [];
 
+    this.devices.add(devices);
+
+    assert(_midi.onMidiDataReceived != null);
+
     midiDataSubscription = _midi.onMidiDataReceived?.listen((event) {
       _handleMidiData(event);
     });
 
-    final td3 =
-        devices.firstWhereOrNull((element) => element.name == 'TD-3' || element.name == 'TD-3-MO');
+    final td3 = devices.firstWhereOrNull((element) => element.name.contains('TD-3'));
 
     if (td3 != null) {
       _td3 = td3;
@@ -94,6 +99,8 @@ class Td3Connection {
       //debugPrint('Discarding non sysex message: $packetData');
       return;
     }
+
+    debugPrint('Td3Connection received bytes: length:${packetData.length} data:$packetData');
 
     final data = packet.data.sublist(1, packet.data.length - 1);
     final td3PatternData = PatternParser.parseData(data);

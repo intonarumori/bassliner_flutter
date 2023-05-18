@@ -6,6 +6,8 @@ import 'package:bassliner/data/pattern_data.dart';
 import 'package:bassliner/data/pattern_parser.dart';
 import 'package:bassliner/data/td3_connection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_midi_command/flutter_midi_command.dart';
+import 'package:rxdart/subjects.dart';
 
 class PatternEditor extends ChangeNotifier {
   EditorPatternData _pattern = EditorPatternData.getDefault();
@@ -18,6 +20,9 @@ class PatternEditor extends ChangeNotifier {
 
   StreamSubscription<Td3PatternData>? patternSubscription;
   StreamSubscription<bool>? connectionSubscription;
+
+  BehaviorSubject<bool> get isConnected => connection.connected;
+  BehaviorSubject<List<MidiDevice>> get devices => connection.devices;
 
   PatternEditor() {
     patternSubscription = connection.patternStream.listen(_handlePatternReceived);
@@ -38,6 +43,10 @@ class PatternEditor extends ChangeNotifier {
     _pattern = editorPatternData;
 
     notifyListeners();
+  }
+
+  void forceConnetion() {
+    connection.connected.add(true);
   }
 
   String selectedPatternName() {
