@@ -42,10 +42,13 @@ class _MainScreenState extends State<MainScreen> {
   final colors = [
     Colors.red,
     const Color(0xFF010101),
+    const Color(0xFF9395CE),
     Colors.orange,
-    Colors.brown,
+    Colors.cyan,
+    Colors.pink,
     Colors.blue,
-    Colors.green
+    Colors.green,
+    Colors.yellow,
   ];
   int _currentTheme = 0;
 
