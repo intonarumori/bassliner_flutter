@@ -71,6 +71,7 @@ class NoteItem extends StatelessWidget {
       content = Text(
         text!,
         textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 9),
       );
     }
     if (icon != null) {

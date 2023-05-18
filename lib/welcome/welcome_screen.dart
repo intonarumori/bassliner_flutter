@@ -90,7 +90,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       );
                                     }),
                                     child: Text(
-                                      'Open the manual for instruction.',
+                                      'Open the manual for instructions.',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Theme.of(context).basslinerTheme.selectionColor),

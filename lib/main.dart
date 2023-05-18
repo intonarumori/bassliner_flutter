@@ -67,7 +67,20 @@ class _MainScreenState extends State<MainScreen> {
     final color = colors[_currentTheme];
 
     final basslinerTheme = BasslinerTheme.generateTheme(color);
-    theme = ThemeData.light()..basslinerTheme = basslinerTheme;
+    final colorScheme = ColorScheme(
+      brightness: Brightness.light,
+      primary: color,
+      onPrimary: basslinerTheme.selectionColor,
+      secondary: color,
+      onSecondary: basslinerTheme.selectionColor,
+      error: Colors.red,
+      onError: Colors.white,
+      background: basslinerTheme.backgroundColor,
+      onBackground: basslinerTheme.selectionColor,
+      surface: basslinerTheme.disabledBlackKeyColor,
+      onSurface: basslinerTheme.whiteKeyColor,
+    );
+    theme = ThemeData.from(colorScheme: colorScheme)..basslinerTheme = basslinerTheme;
     setState(() {});
   }
 
