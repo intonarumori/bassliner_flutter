@@ -20,6 +20,7 @@ void main() {
       DeviceOrientation.landscapeLeft,
     ]);
   }
+  debugRepaintRainbowEnabled = false;
   runApp(const MainApp());
 }
 
