@@ -227,10 +227,12 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
                 const SizedBox(width: 5),
                 Expanded(child: Consumer<PatternEditor>(builder: (context, value, child) {
-                  return NoteEditorWidget(
-                    enabledSteps: value.pattern.steps,
-                    notes: value.pattern.notes,
-                    onChange: (notes) => value.setNotes(notes),
+                  return RepaintBoundary(
+                    child: NoteEditorWidget(
+                      enabledSteps: value.pattern.steps,
+                      notes: value.pattern.notes,
+                      onChange: (notes) => value.setNotes(notes),
+                    ),
                   );
                 }))
               ],

@@ -89,17 +89,19 @@ class _MultiSelectRowWidgetState extends State<MultiSelectRowWidget> {
       onTouchMoved: _touchMoved,
       onTouchEnded: _touchEnded,
       onTouchCancelled: _touchEnded,
-      child: Row(
-        children: values
-            .asMap()
-            .entries
-            .map<Widget>(
-              (e) => Expanded(
-                child: widget.itemBuilder(e.key, e.value, e.key < widget.enabledSteps),
-              ),
-            )
-            .intersperse(() => const SizedBox(width: 2))
-            .toList(),
+      child: RepaintBoundary(
+        child: Row(
+          children: values
+              .asMap()
+              .entries
+              .map<Widget>(
+                (e) => Expanded(
+                  child: widget.itemBuilder(e.key, e.value, e.key < widget.enabledSteps),
+                ),
+              )
+              .intersperse(() => const SizedBox(width: 2))
+              .toList(),
+        ),
       ),
     );
   }

@@ -41,12 +41,13 @@ class NoteColumn extends StatelessWidget {
       );
     }).toList();
 
-    return Column(
+    return RepaintBoundary(
+        child: Column(
       children: children
           .map<Widget>((e) => Expanded(child: e))
           .intersperse(() => const SizedBox(height: padding))
           .toList(),
-    );
+    ));
   }
 }
 

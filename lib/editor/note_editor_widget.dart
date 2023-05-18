@@ -87,11 +87,13 @@ class _NoteEditorWidgetState extends State<NoteEditorWidget> {
             .map<Widget>((e) {
               final enabled = e.key < widget.enabledSteps;
               return Expanded(
-                child: NoteColumn(
-                  selectedIndex: e.value,
-                  notes: _notesPerColumn,
-                  selectionColor: enabled ? theme.selectionColor : theme.disabledSelectionColor,
-                  colors: enabled ? theme.keyColors : theme.disabledKeyColors,
+                child: RepaintBoundary(
+                  child: NoteColumn(
+                    selectedIndex: e.value,
+                    notes: _notesPerColumn,
+                    selectionColor: enabled ? theme.selectionColor : theme.disabledSelectionColor,
+                    colors: enabled ? theme.keyColors : theme.disabledKeyColors,
+                  ),
                 ),
               );
             })

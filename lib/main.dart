@@ -4,6 +4,7 @@ import 'package:bassliner/data/pattern_editor.dart';
 import 'package:bassliner/editor/editor_screen.dart';
 import 'package:bassliner/views/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
