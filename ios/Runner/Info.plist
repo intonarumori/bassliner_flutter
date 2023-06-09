@@ -8,6 +8,25 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Bassliner</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>AppIconSilver180.png</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Bassliner Pattern</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>hu.deltaseven.bassliner.app.pattern</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -24,10 +43,16 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>The app uses Bluetooth to connect to MIDI devices.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>The app uses Bluetooth to connect to MIDI devices.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIFileSharingEnabled</key>
@@ -52,48 +77,29 @@
 	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>CFBundleDocumentTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeIconFiles</key>
-            <array>
-                <string>AppIconSilver180.png</string>
-            </array>
-            <key>CFBundleTypeName</key>
-            <string>Bassliner Pattern</string>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>LSHandlerRank</key>
-            <string>Owner</string>
-            <key>LSItemContentTypes</key>
-            <array>
-                <string>hu.deltaseven.bassliner.app.pattern</string>
-            </array>
-        </dict>
-    </array>
-    <key>UTExportedTypeDeclarations</key>
-    <array>
-        <dict>
-            <key>UTTypeConformsTo</key>
-            <array>
-                <string>public.data</string>
-            </array>
-            <key>UTTypeDescription</key>
-            <string>Bassliner Pattern</string>
-            <key>UTTypeIconFiles</key>
-            <array>
-                <string>AppIconSilver180.png</string>
-            </array>
-            <key>UTTypeIdentifier</key>
-            <string>hu.deltaseven.bassliner.app.pattern</string>
-            <key>UTTypeTagSpecification</key>
-            <dict>
-                <key>public.filename-extension</key>
-                <array>
-                    <string>pat</string>
-                </array>
-            </dict>
-        </dict>
-    </array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Bassliner Pattern</string>
+			<key>UTTypeIconFiles</key>
+			<array>
+				<string>AppIconSilver180.png</string>
+			</array>
+			<key>UTTypeIdentifier</key>
+			<string>hu.deltaseven.bassliner.app.pattern</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pat</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

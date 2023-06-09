@@ -361,9 +361,9 @@ class _FolderItemView extends StatelessWidget {
               ? Theme.of(context).basslinerTheme.selectionColor
               : Theme.of(context).basslinerTheme.disabledWhiteKeyColor,
         ),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(5),
         height: 40,
-        child: Text(text),
+        child: Center(child: Text(text)),
       ),
     );
   }
