@@ -55,23 +55,18 @@ class BorderedButton extends StatelessWidget {
           children: children.intersperse(() => const SizedBox(width: 7)).toList());
     }
 
-    return TextButton(
+    return FilledButton(
       onPressed: onPressed,
-      style: TextButton.styleFrom(
+      style: FilledButton.styleFrom(
         foregroundColor: theme.textColor,
-        padding: EdgeInsets.zero,
+        padding: insets,
         minimumSize: minimumSize ?? const Size(15, 15),
         maximumSize: minimumSize,
         tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
+        backgroundColor: theme.backgroundColor,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
       ),
-      child: Container(
-        padding: insets,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-          color: theme.backgroundColor,
-        ),
-        child: Center(child: content),
-      ),
+      child: content,
     );
   }
 }

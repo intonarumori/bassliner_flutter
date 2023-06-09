@@ -187,6 +187,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                       Expanded(
                                         child: BorderedButton(
                                           text: '-',
+                                          minimumSize: const Size(40, 40),
                                           onPressed: () => editor.incrementSteps(-1),
                                         ),
                                       ),
@@ -194,6 +195,7 @@ class _EditorScreenState extends State<EditorScreen> {
                                       Expanded(
                                         child: BorderedButton(
                                           text: '+',
+                                          minimumSize: const Size(40, 40),
                                           onPressed: () => editor.incrementSteps(1),
                                         ),
                                       ),
