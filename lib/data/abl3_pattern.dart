@@ -273,8 +273,14 @@ class Abl3Version16PatternParser {
       if (parts.length < 6) {
         throw Abl3ParseException('Invalid step content');
       }
+
+      // NOTE:
+      // We shift the pitch down one octave
+      // This might have been an oversight in the original Bassliner iOS implementation, the notes
+      // were probably stored one octave up, so here we try to compensate for it.
+      // TODO: some tests to verify old saved patterns will be loaded correctly.
       final step = Abl3PatternStep(
-          pitch: parts[0] - 12, // shifting down to be in sync with the newer format
+          pitch: parts[0] - 12,
           up: parts[1] == 1,
           down: parts[2] == 1,
           accent: parts[3] == 1,
