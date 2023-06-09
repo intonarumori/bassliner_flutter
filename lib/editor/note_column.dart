@@ -66,12 +66,13 @@ class NoteItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCompact = MediaQuery.of(context).size.height < 600;
     Widget? content;
     if (text != null) {
       content = Text(
         text!,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 10),
+        style: TextStyle(fontSize: isCompact ? 10 : 13),
       );
     }
     if (icon != null) {
