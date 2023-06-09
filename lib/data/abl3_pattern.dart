@@ -202,3 +202,85 @@ class Abl3Version9PatternParser {
     return Abl3Pattern(parameters: parameters, steps: steps);
   }
 }
+
+class Abl3Version16PatternParser {
+  //        ; ABL3 Meta tag: 16
+  //        ; Tune: 0.500000 Cutoff: 0.324000 Resonance: 0.298000 Envmod: 0.481000 Decay: 0.780000 Accent: 0.674000 Waveform: 0.000000 Volume: 0.550000
+  //        -12 0 0 0 0 1
+  //        -11 1 0 0 0 1
+  //        -10 0 1 0 0 1
+  //        -9 1 1 0 0 1
+  //        -8 0 0 0 0 1
+  //        -7 0 0 0 0 1
+  //        -6 0 0 0 0 1
+  //        -5 0 0 0 0 1
+  //        -4 0 0 0 0 1
+  //        -3 0 0 0 0 1
+  //        -2 0 0 0 0 1
+  //        -1 0 0 0 0 1
+  //        0 0 0 0 0 1
+  //        1 0 0 0 0 1
+  //        2 0 0 0 0 1
+  //        3 0 0 0 0 1
+
+  static const metaHeader = '; ABL3 Meta tag: 16';
+
+  static Abl3Pattern? parsePattern(String string) {
+    final lines = string.split('\n');
+
+    if (lines.length < 2 || lines.first.trim() != metaHeader) {
+      throw Abl3ParseException('Invalid header');
+    }
+
+    // parse lines[1] for synth parameters
+    final synthParamParts = lines[1].trim().split(' ');
+    if (synthParamParts.length < 2) {
+      throw Abl3ParseException('Invalid parameters');
+    }
+
+    double triplet = 0;
+    double shuffle = 0;
+
+    int index = 0;
+    while (true) {
+      if (synthParamParts.length < (index * 2 + 2)) {
+        break;
+      }
+      final name = synthParamParts[index * 2 + 1].trim();
+      final value = double.parse(synthParamParts[index * 2 + 2].trim());
+
+      // We are not retaining these
+      debugPrint('synth param $name : $value');
+
+      index += 1;
+    }
+
+    final parameters = Abl3SynthParameters(triplet: triplet, shuffle: shuffle);
+
+    final List<Abl3PatternStep> steps = [];
+
+    for (int i = 2; i < lines.length; i++) {
+      final line = lines[i];
+      if (line.isEmpty) continue;
+      final parts = line
+          .split(' ')
+          .map((e) => int.tryParse(e))
+          .where((element) => element != null)
+          .map((e) => e!)
+          .toList();
+      if (parts.length < 6) {
+        throw Abl3ParseException('Invalid step content');
+      }
+      final step = Abl3PatternStep(
+          pitch: parts[0],
+          up: parts[1] == 1,
+          down: parts[2] == 1,
+          accent: parts[3] == 1,
+          slide: parts[4] == 1,
+          gate: parts[5] == 1);
+      steps.add(step);
+    }
+
+    return Abl3Pattern(parameters: parameters, steps: steps);
+  }
+}
