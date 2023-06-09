@@ -8,7 +8,9 @@ import 'package:bassliner/views/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class MobileFileBrowser extends StatefulWidget {
   final BrowseScreenViewModel viewModel;
@@ -19,6 +21,12 @@ class MobileFileBrowser extends StatefulWidget {
 }
 
 class _MobileFileBrowserState extends State<MobileFileBrowser> {
+  void _openDocuments() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final urlPath = 'shareddocuments://${directory.absolute.path}';
+    launchUrlString(urlPath);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).basslinerTheme;
@@ -46,14 +54,16 @@ class _MobileFileBrowserState extends State<MobileFileBrowser> {
                       ),
                       Row(
                         children: [
-                          // BorderedButton(
-                          //   icon: 'assets/FolderIcon.svg',
-                          //   insets: const EdgeInsets.all(7),
-                          //   minimumSize: const Size(50, 30),
-                          //   shrinkWrap: true,
-                          //   theme: borderedButtonTheme,
-                          //   onPressed: () => debugPrint('new folder'),
-                          // ),
+                          if (Platform.isIOS) ...[
+                            BorderedButton(
+                              icon: 'assets/FolderIcon.svg',
+                              insets: const EdgeInsets.all(7),
+                              minimumSize: const Size(50, 30),
+                              shrinkWrap: true,
+                              theme: borderedButtonTheme,
+                              onPressed: _openDocuments,
+                            ),
+                          ],
                           const Spacer(),
                           if (widget.viewModel.mode == BrowseScreenMode.save) ...[
                             BorderedButton(
