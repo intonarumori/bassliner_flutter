@@ -16,7 +16,10 @@ dependencies:
   path_provider: ^2.0.15
   provider: ^6.0.5
   rxdart: ^0.27.7
+  security_scoped_resource: #^0.0.1
+    path: ../security_scoped_resource
   shared_preferences: ^2.1.1
+  uni_links: ^0.5.1
   url_launcher: ^6.1.11
   watcher:
     #path: ../watcher

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bassliner/browser/browser_screen.dart';
 import 'package:bassliner/browser/browser_viewmodels.dart';
 import 'package:bassliner/data/pattern_editor.dart';
@@ -11,7 +13,9 @@ import 'package:bassliner/views/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:bassliner/browser/custom_cupertino_alert_dialog.dart' as cup;
 
 class EditorScreen extends StatefulWidget {
   final Function() onToggleTheme;
@@ -22,6 +26,73 @@ class EditorScreen extends StatefulWidget {
 }
 
 class _EditorScreenState extends State<EditorScreen> {
+  @override
+  void initState() {
+    super.initState();
+    initUniLinks();
+  }
+
+  @override
+  void dispose() {
+    _uriSubscripton.cancel();
+    super.dispose();
+  }
+
+  late StreamSubscription _uriSubscripton;
+
+  Future<void> initUniLinks() async {
+    // ... check initialUri
+    final initialUri = await getInitialUri();
+    if (initialUri != null) {
+      _handleOpeningPattern(initialUri);
+    }
+
+    // Attach a listener to the stream
+    _uriSubscripton = uriLinkStream.listen((Uri? uri) {
+      debugPrint('URL $uri');
+      if (uri != null) {
+        _handleOpeningPattern(uri);
+      }
+      // Use the uri and warn the user, if it is not correct
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+    });
+
+    // NOTE: Don't forget to call _sub.cancel() in dispose()
+  }
+
+  void _handleOpeningPattern(Uri uri) {
+    if (uri.pathSegments.last.split('.').last != 'pat') return;
+
+    showDialog(
+      context: context,
+      builder: (context) => cup.CupertinoAlertDialog(
+        title: const Text('Open Pattern'),
+        content: const Text(
+            'Opening this pattern will discard the currently edited pattern and overwrite the currently selected slot in the TD-3.'),
+        actions: [
+          cup.CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          cup.CupertinoDialogAction(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _loadPatternFromUri(uri);
+            },
+            child: const Text('Open'),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _loadPatternFromUri(Uri uri) async {
+    final patternEditor = Provider.of<PatternEditor>(context, listen: false);
+    patternEditor.loadFromUri(uri);
+  }
+
   void _navigateToSave() {
     final patternEditor = Provider.of<PatternEditor>(context, listen: false);
     Navigator.of(context).push(

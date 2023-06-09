@@ -97,6 +97,7 @@ class Abl3ParseException implements Exception {
 }
 
 class Abl3Version9PatternParser {
+  // The newer format
 // ; ABL3 Meta tag: 9
 // ; Triplet: 0.000000 Shuffle: 0.000000
   //        -12 0 0 0 0 1
@@ -136,7 +137,7 @@ class Abl3Version9PatternParser {
     return string;
   }
 
-  static Abl3Pattern? parsePattern(String string) {
+  static Abl3Pattern parsePattern(String string) {
     final lines = string.split('\n');
 
     if (lines.length < 2 || lines.first.trim() != metaHeader) {
@@ -204,6 +205,7 @@ class Abl3Version9PatternParser {
 }
 
 class Abl3Version16PatternParser {
+  // The older format
   //        ; ABL3 Meta tag: 16
   //        ; Tune: 0.500000 Cutoff: 0.324000 Resonance: 0.298000 Envmod: 0.481000 Decay: 0.780000 Accent: 0.674000 Waveform: 0.000000 Volume: 0.550000
   //        -12 0 0 0 0 1
@@ -225,7 +227,7 @@ class Abl3Version16PatternParser {
 
   static const metaHeader = '; ABL3 Meta tag: 16';
 
-  static Abl3Pattern? parsePattern(String string) {
+  static Abl3Pattern parsePattern(String string) {
     final lines = string.split('\n');
 
     if (lines.length < 2 || lines.first.trim() != metaHeader) {
@@ -272,7 +274,7 @@ class Abl3Version16PatternParser {
         throw Abl3ParseException('Invalid step content');
       }
       final step = Abl3PatternStep(
-          pitch: parts[0],
+          pitch: parts[0] - 12, // shifting down to be in sync with the newer format
           up: parts[1] == 1,
           down: parts[2] == 1,
           accent: parts[3] == 1,

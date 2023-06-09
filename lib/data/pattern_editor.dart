@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bassliner/data/abl3_pattern.dart';
 import 'package:bassliner/data/pattern_data.dart';
 import 'package:bassliner/data/pattern_parser.dart';
@@ -8,6 +7,7 @@ import 'package:bassliner/data/td3_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_midi_command/flutter_midi_command.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:security_scoped_resource/security_scoped_resource.dart';
 
 class PatternEditor {
   EditorPatternData _pattern = EditorPatternData.getDefault();
@@ -105,25 +105,41 @@ class PatternEditor {
     connection.sendPatternData(td3PatternData, group, pattern);
   }
 
-  void loadCurrentFromPath(String path) async {
+  Future<void> loadFromUri(Uri uri) async {
+    final file = File.fromUri(uri);
+
+    final secure = await SecurityScopedResource.instance.startAccessingSecurityScopedResource(file);
+    if (secure) {
+      final data = await file.readAsString();
+      await _loadFromData(data);
+    }
+    await SecurityScopedResource.instance.stopAccessingSecurityScopedResource(file);
+  }
+
+  Future<void> loadCurrentFromPath(String path) async {
     final data = await File(path).readAsString();
-    Abl3Pattern? abl3Pattern;
+    return _loadFromData(data);
+  }
+
+  Future<void> _loadFromData(String data) async {
+    // Newer pattern format
     try {
-      abl3Pattern = Abl3Version9PatternParser.parsePattern(data);
+      final abl3Pattern = Abl3Version9PatternParser.parsePattern(data);
+      final editorPatternData = EditorPatternData.fromAbl3Pattern(abl3Pattern);
+      _updatePattern(editorPatternData);
+      return;
     } on Abl3ParseException {
       debugPrint('Not an ABL3 version 9 file');
     }
-    if (abl3Pattern == null) {
-      try {
-        abl3Pattern = Abl3Version16PatternParser.parsePattern(data);
-      } on Abl3ParseException {
-        debugPrint('Not an ABL3 version 16 file');
-      }
-    }
-    if (abl3Pattern != null) {
+
+    // Fall back to older pattern format
+    try {
+      final abl3Pattern = Abl3Version16PatternParser.parsePattern(data);
       final editorPatternData = EditorPatternData.fromAbl3Pattern(abl3Pattern);
       _updatePattern(editorPatternData);
-      debugPrint('ABL3 file loaded successfully.');
+      return;
+    } on Abl3ParseException {
+      debugPrint('Not an ABL3 version 16 file');
     }
   }
 

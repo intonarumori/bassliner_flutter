@@ -62,6 +62,8 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
   }
 
+  // MARK:
+
   void _toggleTheme() {
     _currentTheme = (_currentTheme + 1) % colors.length;
     final color = colors[_currentTheme];
