@@ -216,15 +216,17 @@ class _EditorScreenState extends State<EditorScreen> {
                                   ),
                                   const SizedBox(width: 7),
                                   Container(
-                                    padding: const EdgeInsets.fromLTRB(7, 5, 7, 5),
+                                    padding: const EdgeInsets.fromLTRB(7, 0, 7, 0),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                                       color: Theme.of(context).basslinerTheme.backgroundColor,
                                     ),
-                                    child: Text(
-                                      value.selectedPatternName(),
-                                      style: TextStyle(
-                                        color: Theme.of(context).basslinerTheme.whiteKeyColor,
+                                    child: Center(
+                                      child: Text(
+                                        value.selectedPatternName(),
+                                        style: TextStyle(
+                                          color: Theme.of(context).basslinerTheme.whiteKeyColor,
+                                        ),
                                       ),
                                     ),
                                   )
