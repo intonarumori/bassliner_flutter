@@ -9,7 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_midi_command: ^0.4.11
+  flutter_midi_command:
+    path: ../FlutterMidiCommand
   flutter_svg: ^2.0.5
   intl: ^0.18.1
   path_provider: ^2.0.15
