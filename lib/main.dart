@@ -90,19 +90,25 @@ class _MainScreenState extends State<MainScreen> {
       create: (context) => PatternEditor(),
       child: MaterialApp(
         theme: theme,
-        home: Scaffold(
-          body: Consumer<PatternEditor>(builder: (context, patternEditor, child) {
-            return StreamBuilder(
-                stream: patternEditor.isConnected.stream,
-                builder: (context, snapshot) {
-                  final connected = snapshot.data ?? false;
-                  if (connected) {
-                    return EditorScreen(onToggleTheme: _toggleTheme);
-                  } else {
-                    return WelcomeScreen(onToggleTheme: _toggleTheme);
-                  }
-                });
-          }),
+        home: AnnotatedRegion<SystemUiOverlayStyle>(
+          // Use [SystemUiOverlayStyle.light] for white status bar
+          // or [SystemUiOverlayStyle.dark] for black status bar
+          // https://stackoverflow.com/a/58132007/1321917
+          value: SystemUiOverlayStyle.light,
+          child: Scaffold(
+            body: Consumer<PatternEditor>(builder: (context, patternEditor, child) {
+              return StreamBuilder(
+                  stream: patternEditor.isConnected.stream,
+                  builder: (context, snapshot) {
+                    final connected = snapshot.data ?? false;
+                    if (connected) {
+                      return EditorScreen(onToggleTheme: _toggleTheme);
+                    } else {
+                      return WelcomeScreen(onToggleTheme: _toggleTheme);
+                    }
+                  });
+            }),
+          ),
         ),
       ),
     );
