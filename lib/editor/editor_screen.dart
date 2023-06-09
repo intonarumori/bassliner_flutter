@@ -128,9 +128,33 @@ class _EditorScreenState extends State<EditorScreen> {
                           BorderedButton(text: 'Load', onPressed: _navigateToLoad),
                           const SizedBox(width: 4),
                           Consumer<PatternEditor>(builder: (context, value, child) {
-                            return BorderedButton(
-                                text: 'Edit ${value.selectedPatternName()}',
-                                onPressed: _navigateToEdit);
+                            return TextButton(
+                              onPressed: _navigateToEdit,
+                              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                              child: Container(
+                                padding: const EdgeInsets.fromLTRB(8, 3, 3, 3),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                  color: Theme.of(context).basslinerTheme.whiteKeyColor,
+                                ),
+                                child: Row(children: [
+                                  Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                        color: Theme.of(context).basslinerTheme.backgroundColor),
+                                  ),
+                                  const SizedBox(width: 7),
+                                  Container(
+                                    padding: const EdgeInsets.fromLTRB(7, 5, 7, 5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                                      color: Theme.of(context).basslinerTheme.backgroundColor,
+                                    ),
+                                    child: Text(value.selectedPatternName()),
+                                  )
+                                ]),
+                              ),
+                            );
                           }),
                           const SizedBox(width: 4),
                           Consumer<PatternEditor>(builder: (context, value, child) {
