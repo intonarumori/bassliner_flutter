@@ -2,6 +2,7 @@ import 'package:bassliner/views/iterable_extension.dart';
 import 'package:bassliner/views/multi_touch_detector.dart';
 import 'package:bassliner/editor/note_column.dart';
 import 'package:bassliner/views/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class NoteEditorWidget extends StatefulWidget {
@@ -36,7 +37,7 @@ class _NoteEditorWidgetState extends State<NoteEditorWidget> {
   @override
   void didUpdateWidget(covariant NoteEditorWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.notes != widget.notes) {
+    if (!listEquals(oldWidget.notes, widget.notes)) {
       _pitches = widget.notes;
       setState(() {});
     }
@@ -62,17 +63,24 @@ class _NoteEditorWidgetState extends State<NoteEditorWidget> {
     final columnWidth = size.width / _pitches.length.toDouble();
     final rowHeight = size.height / _notesPerColumn;
 
+    var newPitches = _pitches.toList();
+
     _trackedTouches.forEach((key, value) {
       final column = (value.dx / columnWidth).floor().clamp(0, _pitches.length - 1);
       final row = (value.dy / rowHeight + 1).floor().clamp(0, _notesPerColumn);
-      _pitches[column] = _notesPerColumn - row;
-      widget.onChange(_pitches);
+      newPitches[column] = _notesPerColumn - row;
     });
-    setState(() {});
+
+    if (!listEquals(_pitches, newPitches)) {
+      _pitches = newPitches;
+      widget.onChange(_pitches);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('[NoteEditorWidget] build');
+
     final theme = Theme.of(context).basslinerTheme;
 
     return MultiTouchDetector(

@@ -1,5 +1,6 @@
 import 'package:bassliner/views/iterable_extension.dart';
 import 'package:bassliner/views/multi_touch_detector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MultiSelectRowWidget extends StatefulWidget {
@@ -33,18 +34,21 @@ class _MultiSelectRowWidgetState extends State<MultiSelectRowWidget> {
   @override
   void didUpdateWidget(covariant MultiSelectRowWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    values = widget.values;
-    setState(() {});
+    if (!listEquals(widget.values, oldWidget.values)) {
+      values = widget.values;
+      setState(() {});
+    }
   }
 
   void _touchStarted(int pointer, Offset localPosition) {
+    debugPrint("Touch started");
     final index = _stepIndexForPosition(localPosition);
     if (index != null) {
       _trackedTouches[pointer] = index;
       values[index] = !values[index];
       widget.onChange(values);
     }
-    _updateSelection();
+    setState(() {});
   }
 
   void _touchMoved(int pointer, Offset localPosition) {
@@ -58,13 +62,10 @@ class _MultiSelectRowWidgetState extends State<MultiSelectRowWidget> {
         _trackedTouches[pointer] = -1;
       }
     }
-
-    _updateSelection();
+    setState(() {});
   }
 
-  void _touchEnded(int pointer, Offset localPosition) {
-    _updateSelection();
-  }
+  void _touchEnded(int pointer, Offset localPosition) {}
 
   int? _stepIndexForPosition(Offset offset) {
     final size = context.size ?? const Size(200, 200);
@@ -78,12 +79,9 @@ class _MultiSelectRowWidgetState extends State<MultiSelectRowWidget> {
     return index;
   }
 
-  void _updateSelection() {
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    debugPrint('Rebuilt multi touch row $this');
     return MultiTouchDetector(
       onTouchStarted: _touchStarted,
       onTouchMoved: _touchMoved,

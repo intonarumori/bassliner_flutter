@@ -86,7 +86,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return Provider(
       create: (context) => PatternEditor(),
       child: MaterialApp(
         theme: theme,

@@ -150,7 +150,12 @@ class _EditorScreenState extends State<EditorScreen> {
                                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                                       color: Theme.of(context).basslinerTheme.backgroundColor,
                                     ),
-                                    child: Text(value.selectedPatternName()),
+                                    child: Text(
+                                      value.selectedPatternName(),
+                                      style: TextStyle(
+                                        color: Theme.of(context).basslinerTheme.whiteKeyColor,
+                                      ),
+                                    ),
                                   )
                                 ]),
                               ),
@@ -257,14 +262,18 @@ class _EditorScreenState extends State<EditorScreen> {
                   ),
                 ),
                 const SizedBox(width: 5),
-                Expanded(child: Consumer<PatternEditor>(builder: (context, value, child) {
-                  return RepaintBoundary(
-                    child: NoteEditorWidget(
-                      enabledSteps: value.pattern.steps,
-                      notes: value.pattern.notes,
-                      onChange: (notes) => value.setNotes(notes),
-                    ),
-                  );
+                Expanded(child: Consumer<PatternEditor>(builder: (context, editor, child) {
+                  return StreamBuilder(
+                      stream: editor.notes,
+                      builder: (context, snapshot) {
+                        return RepaintBoundary(
+                          child: NoteEditorWidget(
+                            enabledSteps: editor.pattern.steps,
+                            notes: editor.pattern.notes,
+                            onChange: (notes) => editor.setNotes(notes),
+                          ),
+                        );
+                      });
                 }))
               ],
             ),
@@ -285,12 +294,16 @@ class _EditorScreenState extends State<EditorScreen> {
                   ),
                 ),
                 const SizedBox(width: 5),
-                Expanded(child: Consumer<PatternEditor>(builder: (context, value, child) {
-                  return OctaveEditorWidget(
-                    enabledSteps: value.pattern.steps,
-                    values: value.pattern.octaves,
-                    onChange: (values) => value.setOctaves(values),
-                  );
+                Expanded(child: Consumer<PatternEditor>(builder: (context, editor, child) {
+                  return StreamBuilder(
+                      stream: editor.octaves,
+                      builder: (context, snapshot) {
+                        return OctaveEditorWidget(
+                          enabledSteps: editor.pattern.steps,
+                          values: editor.pattern.octaves,
+                          onChange: (values) => editor.setOctaves(values),
+                        );
+                      });
                 })),
               ],
             ),
@@ -313,18 +326,24 @@ class _EditorScreenState extends State<EditorScreen> {
                       ),
                       const SizedBox(width: 5),
                       Expanded(
-                        child: Consumer<PatternEditor>(builder: (context, value, child) {
-                          return MultiSelectRowWidget(
-                            enabledSteps: value.pattern.steps,
-                            values: value.pattern.slides,
-                            itemBuilder: (index, selected, enabled) => NoteItem(
-                              color: enabled ? theme.selectionColor : theme.disabledSelectionColor,
-                              backgroundColor:
-                                  enabled ? theme.whiteKeyColor : theme.disabledWhiteKeyColor,
-                              icon: selected ? 'assets/StepSelectionIcon.svg' : null,
-                            ),
-                            onChange: (values) => value.setSlides(values),
-                          );
+                        child: Consumer<PatternEditor>(builder: (context, editor, child) {
+                          return StreamBuilder(
+                              stream: editor.slides.stream,
+                              builder: (context, snapshot) {
+                                return MultiSelectRowWidget(
+                                  enabledSteps: editor.pattern.steps,
+                                  values: editor.pattern.slides,
+                                  itemBuilder: (index, selected, enabled) => NoteItem(
+                                    color: enabled
+                                        ? theme.selectionColor
+                                        : theme.disabledSelectionColor,
+                                    backgroundColor:
+                                        enabled ? theme.whiteKeyColor : theme.disabledWhiteKeyColor,
+                                    icon: selected ? 'assets/StepSelectionIcon.svg' : null,
+                                  ),
+                                  onChange: (values) => editor.setSlides(values),
+                                );
+                              });
                         }),
                       ),
                     ],
@@ -343,18 +362,23 @@ class _EditorScreenState extends State<EditorScreen> {
                         ),
                       ),
                       const SizedBox(width: 5),
-                      Expanded(child: Consumer<PatternEditor>(builder: (context, value, child) {
-                        return MultiSelectRowWidget(
-                          enabledSteps: value.pattern.steps,
-                          values: value.pattern.accents,
-                          itemBuilder: (index, selected, enabled) => NoteItem(
-                            color: enabled ? theme.selectionColor : theme.disabledSelectionColor,
-                            backgroundColor:
-                                enabled ? theme.whiteKeyColor : theme.disabledWhiteKeyColor,
-                            icon: selected ? 'assets/StepSelectionIcon.svg' : null,
-                          ),
-                          onChange: (values) => value.setAccents(values),
-                        );
+                      Expanded(child: Consumer<PatternEditor>(builder: (context, editor, child) {
+                        return StreamBuilder(
+                            stream: editor.accents,
+                            builder: (context, snapshot) {
+                              return MultiSelectRowWidget(
+                                enabledSteps: editor.pattern.steps,
+                                values: editor.pattern.accents,
+                                itemBuilder: (index, selected, enabled) => NoteItem(
+                                  color:
+                                      enabled ? theme.selectionColor : theme.disabledSelectionColor,
+                                  backgroundColor:
+                                      enabled ? theme.whiteKeyColor : theme.disabledWhiteKeyColor,
+                                  icon: selected ? 'assets/StepSelectionIcon.svg' : null,
+                                ),
+                                onChange: (values) => editor.setAccents(values),
+                              );
+                            });
                       })),
                     ],
                   ),
@@ -377,18 +401,22 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
                 const SizedBox(width: 5),
                 Expanded(
-                  child: Consumer<PatternEditor>(builder: (context, value, child) {
-                    return MultiSelectRowWidget(
-                      enabledSteps: value.pattern.steps,
-                      values: value.pattern.gates,
-                      itemBuilder: (index, selected, enabled) => NoteItem(
-                        color: enabled ? theme.selectionColor : theme.disabledSelectionColor,
-                        backgroundColor:
-                            enabled ? theme.whiteKeyColor : theme.disabledWhiteKeyColor,
-                        icon: selected ? 'assets/StepSelectionIcon.svg' : null,
-                      ),
-                      onChange: (values) => value.setGates(values),
-                    );
+                  child: Consumer<PatternEditor>(builder: (context, editor, child) {
+                    return StreamBuilder(
+                        stream: editor.gates,
+                        builder: (context, snapshot) {
+                          return MultiSelectRowWidget(
+                            enabledSteps: editor.pattern.steps,
+                            values: editor.pattern.gates,
+                            itemBuilder: (index, selected, enabled) => NoteItem(
+                              color: enabled ? theme.selectionColor : theme.disabledSelectionColor,
+                              backgroundColor:
+                                  enabled ? theme.whiteKeyColor : theme.disabledWhiteKeyColor,
+                              icon: selected ? 'assets/StepSelectionIcon.svg' : null,
+                            ),
+                            onChange: (values) => editor.setGates(values),
+                          );
+                        });
                   }),
                 ),
               ],

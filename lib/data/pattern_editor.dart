@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_midi_command/flutter_midi_command.dart';
 import 'package:rxdart/subjects.dart';
 
-class PatternEditor extends ChangeNotifier {
+class PatternEditor {
   EditorPatternData _pattern = EditorPatternData.getDefault();
   EditorPatternData get pattern => _pattern;
 
@@ -21,8 +21,18 @@ class PatternEditor extends ChangeNotifier {
   StreamSubscription<Td3PatternData>? patternSubscription;
   StreamSubscription<bool>? connectionSubscription;
 
+  final triplet = BehaviorSubject<bool>.seeded(false);
+  final stepCount = BehaviorSubject<int>.seeded(16);
+  final notes = BehaviorSubject<List<int>>.seeded(List.generate(16, (index) => 0));
+  final octaves = BehaviorSubject<List<int>>.seeded(List.generate(16, (index) => 1));
+  final slides = BehaviorSubject<List<bool>>.seeded(List.generate(16, (index) => false));
+  final accents = BehaviorSubject<List<bool>>.seeded(List.generate(16, (index) => false));
+  final gates = BehaviorSubject<List<bool>>.seeded(List.generate(16, (index) => false));
+
   BehaviorSubject<bool> get isConnected => connection.connected;
   BehaviorSubject<List<MidiDevice>> get devices => connection.devices;
+
+  // MARK:
 
   PatternEditor() {
     patternSubscription = connection.patternStream.listen(_handlePatternReceived);
@@ -40,9 +50,7 @@ class PatternEditor extends ChangeNotifier {
   void _handlePatternReceived(Td3PatternData td3PatternData) {
     final editorPatternData =
         PatternParser.convertTd3PatternDataToEditorPatternData(td3PatternData);
-    _pattern = editorPatternData;
-
-    notifyListeners();
+    _updatePattern(editorPatternData);
   }
 
   void forceConnetion() {
@@ -90,7 +98,6 @@ class PatternEditor extends ChangeNotifier {
     selectedGroup = group;
     selectedPattern = pattern;
     _refreshCurrentPattern();
-    notifyListeners();
   }
 
   void saveToPattern(int group, int pattern) {
@@ -100,11 +107,22 @@ class PatternEditor extends ChangeNotifier {
 
   void loadCurrentFromPath(String path) async {
     final data = await File(path).readAsString();
-    final abl3Pattern = Abl3Version9PatternParser.parsePattern(data);
+    Abl3Pattern? abl3Pattern;
+    try {
+      abl3Pattern = Abl3Version9PatternParser.parsePattern(data);
+    } on Abl3ParseException {
+      debugPrint('Not an ABL3 version 9 file');
+    }
+    if (abl3Pattern == null) {
+      try {
+        abl3Pattern = Abl3Version16PatternParser.parsePattern(data);
+      } on Abl3ParseException {
+        debugPrint('Not an ABL3 version 16 file');
+      }
+    }
     if (abl3Pattern != null) {
       final editorPatternData = EditorPatternData.fromAbl3Pattern(abl3Pattern);
-      _pattern = editorPatternData;
-      notifyListeners();
+      _updatePattern(editorPatternData);
       debugPrint('ABL3 file loaded successfully.');
     }
   }
@@ -122,59 +140,70 @@ class PatternEditor extends ChangeNotifier {
 
   void setTriplet(bool triplet) {
     pattern.triplets = triplet;
-    notifyListeners();
+    this.triplet.add(triplet);
     _sendChanges();
   }
 
   void incrementSteps(int count) {
     pattern.steps = (pattern.steps + count).clamp(1, 16);
-    notifyListeners();
+    _updatePattern(pattern);
     _sendChanges();
   }
 
   void shift(int offset) {
-    pattern.notes = pattern.notes.rotate(offset);
-    pattern.accents = pattern.accents.rotate(offset);
-    pattern.slides = pattern.slides.rotate(offset);
-    pattern.gates = pattern.gates.rotate(offset);
-    pattern.octaves = pattern.octaves.rotate(offset);
-    notifyListeners();
+    setNotes(pattern.notes.rotate(offset));
+    setOctaves(pattern.octaves.rotate(offset));
+    setAccents(pattern.accents.rotate(offset));
+    setSlides(pattern.slides.rotate(offset));
+    setGates(pattern.gates.rotate(offset));
     _sendChanges();
   }
 
   void setNotes(List<int> notes) {
     pattern.notes = notes;
-    notifyListeners();
+    this.notes.add(notes);
     _sendChanges();
   }
 
   void setGates(List<bool> gates) {
     pattern.gates = gates;
-    notifyListeners();
+    this.gates.add(gates);
     _sendChanges();
   }
 
   void setOctaves(List<int> octaves) {
     pattern.octaves = octaves;
-    notifyListeners();
+    this.octaves.add(octaves);
     _sendChanges();
   }
 
   void setSlides(List<bool> slides) {
     pattern.slides = slides;
-    notifyListeners();
+    this.slides.add(slides);
     _sendChanges();
   }
 
   void setAccents(List<bool> accents) {
     pattern.accents = accents;
-    notifyListeners();
+    this.accents.add(accents);
     _sendChanges();
   }
 
   void _sendChanges() {
+    debugPrint('[PatternEditor] Sending changes to device');
     final td3PatternData = PatternParser.convertEditorPatternDataToTd3PatternData(pattern);
     connection.sendPatternData(td3PatternData, selectedGroup, selectedPattern);
+  }
+
+  void _updatePattern(EditorPatternData data) {
+    _pattern = data;
+    triplet.add(_pattern.triplets);
+    stepCount.add(_pattern.steps);
+    notes.add(_pattern.notes);
+    octaves.add(_pattern.octaves);
+    slides.add(_pattern.slides);
+    accents.add(_pattern.accents);
+    gates.add(_pattern.gates);
   }
 }
 
