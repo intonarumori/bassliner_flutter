@@ -46,6 +46,10 @@ class Td3Connection {
     _timer = Timer.periodic(const Duration(milliseconds: sendInterval), (_) => _sendIfNeeded());
   }
 
+  void dispose() {
+    _timer.cancel();
+  }
+
   void _refreshMidi() async {
     final devices = await _midi.devices ?? [];
 
