@@ -96,7 +96,7 @@ class Abl3ParseException implements Exception {
   Abl3ParseException(this.cause);
 }
 
-class Abl3PatternParser {
+class Abl3Version9PatternParser {
 // ; ABL3 Meta tag: 9
 // ; Triplet: 0.000000 Shuffle: 0.000000
   //        -12 0 0 0 0 1
