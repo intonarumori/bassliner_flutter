@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bassliner/data/pattern_editor.dart';
 import 'package:bassliner/editor/editor_screen.dart';
-import 'package:bassliner/views/theme.dart';
+import 'package:bassliner/utilities/theme_manager.dart';
 import 'package:bassliner/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -42,56 +43,31 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final colors = [
-    Colors.red,
-    const Color(0xFF010101),
-    const Color(0xFF9395CE),
-    Colors.orange,
-    Colors.cyan,
-    Colors.pink,
-    Colors.blue,
-    Colors.green,
-  ];
-  int _currentTheme = 0;
-
-  ThemeData theme = ThemeData.dark();
+  final _themeManager = ThemeManager();
+  late StreamSubscription<ThemeData> _themeSubscription;
 
   @override
   void initState() {
-    _toggleTheme();
     super.initState();
+    _themeSubscription = _themeManager.currentTheme.distinct().listen((value) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _themeSubscription.cancel();
+    super.dispose();
   }
 
   // MARK:
-
-  void _toggleTheme() {
-    _currentTheme = (_currentTheme + 1) % colors.length;
-    final color = colors[_currentTheme];
-
-    final basslinerTheme = BasslinerTheme.generateTheme(color);
-    final colorScheme = ColorScheme(
-      brightness: Brightness.light,
-      primary: color,
-      onPrimary: basslinerTheme.selectionColor,
-      secondary: color,
-      onSecondary: basslinerTheme.selectionColor,
-      error: Colors.red,
-      onError: Colors.white,
-      background: basslinerTheme.backgroundColor,
-      onBackground: basslinerTheme.selectionColor,
-      surface: basslinerTheme.disabledBlackKeyColor,
-      onSurface: basslinerTheme.whiteKeyColor,
-    );
-    theme = ThemeData.from(colorScheme: colorScheme)..basslinerTheme = basslinerTheme;
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     return Provider(
       create: (context) => PatternEditor(),
       child: MaterialApp(
-        theme: theme,
+        theme: _themeManager.currentTheme.value,
         home: AnnotatedRegion<SystemUiOverlayStyle>(
           // Use [SystemUiOverlayStyle.light] for white status bar
           // or [SystemUiOverlayStyle.dark] for black status bar
@@ -104,9 +80,9 @@ class _MainScreenState extends State<MainScreen> {
                   builder: (context, snapshot) {
                     final connected = snapshot.data ?? false;
                     if (connected) {
-                      return EditorScreen(onToggleTheme: _toggleTheme);
+                      return EditorScreen(onToggleTheme: _themeManager.advanceTheme);
                     } else {
-                      return WelcomeScreen(onToggleTheme: _toggleTheme);
+                      return WelcomeScreen(onToggleTheme: _themeManager.advanceTheme);
                     }
                   });
             }),
