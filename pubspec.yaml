@@ -1,7 +1,7 @@
 name: bassliner
 description: Bassline Editor for the TD-3
 publish_to: 'none'
-version: 2.0.2+27
+version: 2.0.3+28
 
 environment:
   sdk: '^3.0.0'
@@ -17,7 +17,10 @@ dependencies:
   provider: ^6.0.5
   rxdart: ^0.27.7
   security_scoped_resource: #^0.0.1
-    path: ../security_scoped_resource
+    #path: ../security_scoped_resource
+    git:
+      url: https://github.com/intonarumori/security_scoped_resource.git
+      ref: 162b091ea28c5fad381cddc909117ed8f102fb91
   shared_preferences: ^2.1.1
   uni_links: ^0.5.1
   url_launcher: ^6.1.11

@@ -290,9 +290,11 @@ packages:
   security_scoped_resource:
     dependency: "direct main"
     description:
-      path: "../security_scoped_resource"
-      relative: true
-    source: path
+      path: "."
+      ref: "162b091ea28c5fad381cddc909117ed8f102fb91"
+      resolved-ref: "162b091ea28c5fad381cddc909117ed8f102fb91"
+      url: "https://github.com/intonarumori/security_scoped_resource.git"
+    source: git
     version: "0.0.1"
   shared_preferences:
     dependency: "direct main"
